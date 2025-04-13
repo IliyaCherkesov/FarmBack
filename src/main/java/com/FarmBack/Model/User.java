@@ -10,32 +10,33 @@ import jakarta.persistence.Table;
 public class User {
 
     @Id
-    String id;
+    public String id;
+
     public String getId() {return id;}
 
-    String birthday;
-    public String getBirthday() {
-        return birthday;
-    }
+    public String birthday;
 
-    String name;
+    public String getBirthday() { return birthday; }
+
+    public String name;
+
     public String getName() {
         return name;
     }
 
-    String email;
+    public String email;
 
     public String getEmail() {
         return email;
     }
 
-    String phone;
+    public String phone;
 
     public String getPhone() {
         return phone;
     }
 
-    String role_id;
+    public String role_id;
 
     public String getRole_id() {
         return role_id;
