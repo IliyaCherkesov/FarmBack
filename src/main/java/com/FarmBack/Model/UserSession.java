@@ -1,17 +1,22 @@
 package com.FarmBack.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "user_sessions")
 public class UserSession {
 
     @Id
+    @GeneratedValue(generator = "uuid2")
+    public UUID id;
+
+    public UUID get_id() { return id; }
+
     public String user_id;
 
-    public String getUser_id() {return user_id;}
+    public String getUser_id() { return user_id; }
 
     public long expire_date;
 

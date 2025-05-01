@@ -7,6 +7,7 @@ import com.FarmBack.Repositories.UserSessionsRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class UserSessionService {
@@ -21,9 +22,12 @@ public class UserSessionService {
         userSession.user_id = user.getId();
         userSession.expire_date = new Date().getTime() + 3600;
         userSession.is_closed = 0;
-        userSession.session_token = "oretertroo";
+        userSession.session_token = UUID.randomUUID().toString();
         this.userSessionsRepository.save(userSession);
         return userSession;
     }
 
+    public boolean IsValid(String jwt) {
+        return true;
+    }
 }

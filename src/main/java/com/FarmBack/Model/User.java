@@ -42,4 +42,6 @@ public class User {
         return role_id;
     }
 
+    public String crypted_password;
+    public String getCrypted_password() { return crypted_password; }
 }

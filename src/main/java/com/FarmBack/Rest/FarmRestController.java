@@ -1,8 +1,11 @@
 package com.FarmBack.Rest;
+import com.FarmBack.DataSource.UserRolesService;
+import com.FarmBack.DataSource.UserSessionService;
 import com.FarmBack.DataSource.UsersService;
-import com.FarmBack.Model.User;
-import com.FarmBack.Model.UserSession;
+import com.FarmBack.Model.*;
+import com.FarmBack.Repositories.UserSessionsRepository;
 import jakarta.validation.constraints.Null;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -12,25 +15,51 @@ import java.util.Optional;
 @RestController
 public class FarmRestController {
     private final UsersService usersService;
+    private final UserSessionService userSessionsService;
+    private final UserRolesService userRolesService;
 
-    FarmRestController(UsersService usersService) {
+    FarmRestController(UsersService usersService, UserSessionService userSessionService, UserRolesService userRolesService) {
         this.usersService = usersService;
+        this.userSessionsService = userSessionService;
+        this.userRolesService = userRolesService;
     }
 
     @GetMapping("/users")
     public List<User> GetUsers() {
-        List<User> users = usersService.findAllUsers();
-        return users;
+        return usersService.findAllUsers();
     }
 
     @PostMapping ("/login")
-    public void Login(@RequestParam("login") String login, @RequestParam("password") String password) {
+    public UserSession Login(@RequestBody UserLoginDTO creds) throws Exception {
+        Optional<User> user = usersService.findUserByLoginAndPassword(creds.login, creds.password);
+        if (user.isPresent()) {
+            return this.userSessionsService.CreateUserSession(user.get());
 
+        }
+        throw new Exception("user not found");
     }
 
     @GetMapping("/user")
     public Optional<User> FindUser() {
-        Optional<User> user = usersService.findUserByLoginAndPassword("oihgfjeuigfuierie", "");
-        return user;
+        return usersService.findUserByLoginAndPassword("oihgfjeuigfuierie", "");
     }
+
+    @PostMapping ("/user")
+    public User CreateUser(@RequestBody UserDTO newUser) throws Exception {
+        List<UserRole> userRoles = this.userRolesService.GetUserRoles();
+        UserRole userRole = null;
+        for (UserRole ur : userRoles) {
+            if (ur.id.equals(newUser.role_id))
+            {
+                userRole = ur;
+                break;
+            }
+        }
+        if (userRole == null) {
+            throw new Exception("Role not found");
+        }
+        return this.usersService.CreateUser(newUser.birthday, newUser.name, newUser.email, newUser.phone, userRole,newUser.password);
+
+    }
+
 }
